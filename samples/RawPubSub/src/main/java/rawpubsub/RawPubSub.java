@@ -16,7 +16,6 @@ import software.amazon.awssdk.crt.io.TlsContextOptions;
 import software.amazon.awssdk.crt.mqtt.*;
 import software.amazon.awssdk.iot.iotjobs.model.RejectedError;
 
-import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;

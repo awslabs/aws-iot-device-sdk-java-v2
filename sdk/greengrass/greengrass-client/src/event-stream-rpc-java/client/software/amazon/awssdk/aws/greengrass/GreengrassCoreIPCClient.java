@@ -17,9 +17,11 @@ import software.amazon.awssdk.aws.greengrass.model.IoTCoreMessage;
 import software.amazon.awssdk.aws.greengrass.model.ListComponentsRequest;
 import software.amazon.awssdk.aws.greengrass.model.ListLocalDeploymentsRequest;
 import software.amazon.awssdk.aws.greengrass.model.ListNamedShadowsForThingRequest;
+import software.amazon.awssdk.aws.greengrass.model.PauseComponentRequest;
 import software.amazon.awssdk.aws.greengrass.model.PublishToIoTCoreRequest;
 import software.amazon.awssdk.aws.greengrass.model.PublishToTopicRequest;
 import software.amazon.awssdk.aws.greengrass.model.RestartComponentRequest;
+import software.amazon.awssdk.aws.greengrass.model.ResumeComponentRequest;
 import software.amazon.awssdk.aws.greengrass.model.SendConfigurationValidityReportRequest;
 import software.amazon.awssdk.aws.greengrass.model.StopComponentRequest;
 import software.amazon.awssdk.aws.greengrass.model.SubscribeToComponentUpdatesRequest;
@@ -49,6 +51,13 @@ public class GreengrassCoreIPCClient extends EventStreamRPCClient implements Gre
       final Optional<StreamResponseHandler<IoTCoreMessage>> streamResponseHandler) {
     final SubscribeToIoTCoreOperationContext operationContext = GreengrassCoreIPCServiceModel.getSubscribeToIoTCoreModelContext();
     return new SubscribeToIoTCoreResponseHandler(doOperationInvoke(operationContext, request, streamResponseHandler));
+  }
+
+  @Override
+  public ResumeComponentResponseHandler resumeComponent(final ResumeComponentRequest request,
+      final Optional<StreamResponseHandler<EventStreamJsonMessage>> streamResponseHandler) {
+    final ResumeComponentOperationContext operationContext = GreengrassCoreIPCServiceModel.getResumeComponentModelContext();
+    return new ResumeComponentResponseHandler(doOperationInvoke(operationContext, request, streamResponseHandler));
   }
 
   @Override
@@ -229,6 +238,13 @@ public class GreengrassCoreIPCClient extends EventStreamRPCClient implements Gre
       final Optional<StreamResponseHandler<EventStreamJsonMessage>> streamResponseHandler) {
     final StopComponentOperationContext operationContext = GreengrassCoreIPCServiceModel.getStopComponentModelContext();
     return new StopComponentResponseHandler(doOperationInvoke(operationContext, request, streamResponseHandler));
+  }
+
+  @Override
+  public PauseComponentResponseHandler pauseComponent(final PauseComponentRequest request,
+      final Optional<StreamResponseHandler<EventStreamJsonMessage>> streamResponseHandler) {
+    final PauseComponentOperationContext operationContext = GreengrassCoreIPCServiceModel.getPauseComponentModelContext();
+    return new PauseComponentResponseHandler(doOperationInvoke(operationContext, request, streamResponseHandler));
   }
 
   @Override

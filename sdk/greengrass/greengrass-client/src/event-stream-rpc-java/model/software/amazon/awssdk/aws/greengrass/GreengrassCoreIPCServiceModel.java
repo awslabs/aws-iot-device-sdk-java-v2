@@ -53,6 +53,8 @@ import software.amazon.awssdk.aws.greengrass.model.ListNamedShadowsForThingReque
 import software.amazon.awssdk.aws.greengrass.model.ListNamedShadowsForThingResponse;
 import software.amazon.awssdk.aws.greengrass.model.LocalDeployment;
 import software.amazon.awssdk.aws.greengrass.model.MQTTMessage;
+import software.amazon.awssdk.aws.greengrass.model.PauseComponentRequest;
+import software.amazon.awssdk.aws.greengrass.model.PauseComponentResponse;
 import software.amazon.awssdk.aws.greengrass.model.PostComponentUpdateEvent;
 import software.amazon.awssdk.aws.greengrass.model.PreComponentUpdateEvent;
 import software.amazon.awssdk.aws.greengrass.model.PublishMessage;
@@ -66,6 +68,8 @@ import software.amazon.awssdk.aws.greengrass.model.RequestStatus;
 import software.amazon.awssdk.aws.greengrass.model.ResourceNotFoundError;
 import software.amazon.awssdk.aws.greengrass.model.RestartComponentRequest;
 import software.amazon.awssdk.aws.greengrass.model.RestartComponentResponse;
+import software.amazon.awssdk.aws.greengrass.model.ResumeComponentRequest;
+import software.amazon.awssdk.aws.greengrass.model.ResumeComponentResponse;
 import software.amazon.awssdk.aws.greengrass.model.RunWithInfo;
 import software.amazon.awssdk.aws.greengrass.model.SecretValue;
 import software.amazon.awssdk.aws.greengrass.model.SendConfigurationValidityReportRequest;
@@ -84,6 +88,7 @@ import software.amazon.awssdk.aws.greengrass.model.SubscribeToTopicResponse;
 import software.amazon.awssdk.aws.greengrass.model.SubscribeToValidateConfigurationUpdatesRequest;
 import software.amazon.awssdk.aws.greengrass.model.SubscribeToValidateConfigurationUpdatesResponse;
 import software.amazon.awssdk.aws.greengrass.model.SubscriptionResponseMessage;
+import software.amazon.awssdk.aws.greengrass.model.SystemResourceLimits;
 import software.amazon.awssdk.aws.greengrass.model.UnauthorizedError;
 import software.amazon.awssdk.aws.greengrass.model.UpdateConfigurationRequest;
 import software.amazon.awssdk.aws.greengrass.model.UpdateConfigurationResponse;
@@ -115,6 +120,10 @@ public class GreengrassCoreIPCServiceModel extends EventStreamRPCServiceModel {
   public static final String SUBSCRIBE_TO_IOT_CORE = SERVICE_NAMESPACE + "#" + "SubscribeToIoTCore";
 
   private static final SubscribeToIoTCoreOperationContext _SUBSCRIBE_TO_IOT_CORE_OPERATION_CONTEXT = new SubscribeToIoTCoreOperationContext();
+
+  public static final String RESUME_COMPONENT = SERVICE_NAMESPACE + "#" + "ResumeComponent";
+
+  private static final ResumeComponentOperationContext _RESUME_COMPONENT_OPERATION_CONTEXT = new ResumeComponentOperationContext();
 
   public static final String PUBLISH_TO_IOT_CORE = SERVICE_NAMESPACE + "#" + "PublishToIoTCore";
 
@@ -212,6 +221,10 @@ public class GreengrassCoreIPCServiceModel extends EventStreamRPCServiceModel {
 
   private static final StopComponentOperationContext _STOP_COMPONENT_OPERATION_CONTEXT = new StopComponentOperationContext();
 
+  public static final String PAUSE_COMPONENT = SERVICE_NAMESPACE + "#" + "PauseComponent";
+
+  private static final PauseComponentOperationContext _PAUSE_COMPONENT_OPERATION_CONTEXT = new PauseComponentOperationContext();
+
   public static final String CREATE_LOCAL_DEPLOYMENT = SERVICE_NAMESPACE + "#" + "CreateLocalDeployment";
 
   private static final CreateLocalDeploymentOperationContext _CREATE_LOCAL_DEPLOYMENT_OPERATION_CONTEXT = new CreateLocalDeploymentOperationContext();
@@ -219,6 +232,8 @@ public class GreengrassCoreIPCServiceModel extends EventStreamRPCServiceModel {
   static {
     SERVICE_OPERATION_MODEL_MAP.put(SUBSCRIBE_TO_IOT_CORE, _SUBSCRIBE_TO_IOT_CORE_OPERATION_CONTEXT);
     SERVICE_OPERATION_SET.add(SUBSCRIBE_TO_IOT_CORE);
+    SERVICE_OPERATION_MODEL_MAP.put(RESUME_COMPONENT, _RESUME_COMPONENT_OPERATION_CONTEXT);
+    SERVICE_OPERATION_SET.add(RESUME_COMPONENT);
     SERVICE_OPERATION_MODEL_MAP.put(PUBLISH_TO_IOT_CORE, _PUBLISH_TO_IOT_CORE_OPERATION_CONTEXT);
     SERVICE_OPERATION_SET.add(PUBLISH_TO_IOT_CORE);
     SERVICE_OPERATION_MODEL_MAP.put(SUBSCRIBE_TO_CONFIGURATION_UPDATE, _SUBSCRIBE_TO_CONFIGURATION_UPDATE_OPERATION_CONTEXT);
@@ -267,17 +282,21 @@ public class GreengrassCoreIPCServiceModel extends EventStreamRPCServiceModel {
     SERVICE_OPERATION_SET.add(LIST_LOCAL_DEPLOYMENTS);
     SERVICE_OPERATION_MODEL_MAP.put(STOP_COMPONENT, _STOP_COMPONENT_OPERATION_CONTEXT);
     SERVICE_OPERATION_SET.add(STOP_COMPONENT);
+    SERVICE_OPERATION_MODEL_MAP.put(PAUSE_COMPONENT, _PAUSE_COMPONENT_OPERATION_CONTEXT);
+    SERVICE_OPERATION_SET.add(PAUSE_COMPONENT);
     SERVICE_OPERATION_MODEL_MAP.put(CREATE_LOCAL_DEPLOYMENT, _CREATE_LOCAL_DEPLOYMENT_OPERATION_CONTEXT);
     SERVICE_OPERATION_SET.add(CREATE_LOCAL_DEPLOYMENT);
     SERVICE_OBJECT_MODEL_MAP.put(SubscribeToIoTCoreRequest.APPLICATION_MODEL_TYPE, SubscribeToIoTCoreRequest.class);
     SERVICE_OBJECT_MODEL_MAP.put(SubscribeToIoTCoreResponse.APPLICATION_MODEL_TYPE, SubscribeToIoTCoreResponse.class);
     SERVICE_OBJECT_MODEL_MAP.put(ServiceError.APPLICATION_MODEL_TYPE, ServiceError.class);
     SERVICE_OBJECT_MODEL_MAP.put(UnauthorizedError.APPLICATION_MODEL_TYPE, UnauthorizedError.class);
+    SERVICE_OBJECT_MODEL_MAP.put(ResumeComponentRequest.APPLICATION_MODEL_TYPE, ResumeComponentRequest.class);
+    SERVICE_OBJECT_MODEL_MAP.put(ResumeComponentResponse.APPLICATION_MODEL_TYPE, ResumeComponentResponse.class);
+    SERVICE_OBJECT_MODEL_MAP.put(ResourceNotFoundError.APPLICATION_MODEL_TYPE, ResourceNotFoundError.class);
     SERVICE_OBJECT_MODEL_MAP.put(PublishToIoTCoreRequest.APPLICATION_MODEL_TYPE, PublishToIoTCoreRequest.class);
     SERVICE_OBJECT_MODEL_MAP.put(PublishToIoTCoreResponse.APPLICATION_MODEL_TYPE, PublishToIoTCoreResponse.class);
     SERVICE_OBJECT_MODEL_MAP.put(SubscribeToConfigurationUpdateRequest.APPLICATION_MODEL_TYPE, SubscribeToConfigurationUpdateRequest.class);
     SERVICE_OBJECT_MODEL_MAP.put(SubscribeToConfigurationUpdateResponse.APPLICATION_MODEL_TYPE, SubscribeToConfigurationUpdateResponse.class);
-    SERVICE_OBJECT_MODEL_MAP.put(ResourceNotFoundError.APPLICATION_MODEL_TYPE, ResourceNotFoundError.class);
     SERVICE_OBJECT_MODEL_MAP.put(DeleteThingShadowRequest.APPLICATION_MODEL_TYPE, DeleteThingShadowRequest.class);
     SERVICE_OBJECT_MODEL_MAP.put(DeleteThingShadowResponse.APPLICATION_MODEL_TYPE, DeleteThingShadowResponse.class);
     SERVICE_OBJECT_MODEL_MAP.put(InvalidArgumentsError.APPLICATION_MODEL_TYPE, InvalidArgumentsError.class);
@@ -327,6 +346,8 @@ public class GreengrassCoreIPCServiceModel extends EventStreamRPCServiceModel {
     SERVICE_OBJECT_MODEL_MAP.put(ListLocalDeploymentsResponse.APPLICATION_MODEL_TYPE, ListLocalDeploymentsResponse.class);
     SERVICE_OBJECT_MODEL_MAP.put(StopComponentRequest.APPLICATION_MODEL_TYPE, StopComponentRequest.class);
     SERVICE_OBJECT_MODEL_MAP.put(StopComponentResponse.APPLICATION_MODEL_TYPE, StopComponentResponse.class);
+    SERVICE_OBJECT_MODEL_MAP.put(PauseComponentRequest.APPLICATION_MODEL_TYPE, PauseComponentRequest.class);
+    SERVICE_OBJECT_MODEL_MAP.put(PauseComponentResponse.APPLICATION_MODEL_TYPE, PauseComponentResponse.class);
     SERVICE_OBJECT_MODEL_MAP.put(CreateLocalDeploymentRequest.APPLICATION_MODEL_TYPE, CreateLocalDeploymentRequest.class);
     SERVICE_OBJECT_MODEL_MAP.put(CreateLocalDeploymentResponse.APPLICATION_MODEL_TYPE, CreateLocalDeploymentResponse.class);
     SERVICE_OBJECT_MODEL_MAP.put(InvalidRecipeDirectoryPathError.APPLICATION_MODEL_TYPE, InvalidRecipeDirectoryPathError.class);
@@ -355,6 +376,7 @@ public class GreengrassCoreIPCServiceModel extends EventStreamRPCServiceModel {
     SERVICE_OBJECT_MODEL_MAP.put(PreComponentUpdateEvent.APPLICATION_MODEL_TYPE, PreComponentUpdateEvent.class);
     SERVICE_OBJECT_MODEL_MAP.put(PostComponentUpdateEvent.APPLICATION_MODEL_TYPE, PostComponentUpdateEvent.class);
     SERVICE_OBJECT_MODEL_MAP.put(RunWithInfo.APPLICATION_MODEL_TYPE, RunWithInfo.class);
+    SERVICE_OBJECT_MODEL_MAP.put(SystemResourceLimits.APPLICATION_MODEL_TYPE, SystemResourceLimits.class);
   }
 
   private GreengrassCoreIPCServiceModel() {
@@ -371,6 +393,10 @@ public class GreengrassCoreIPCServiceModel extends EventStreamRPCServiceModel {
 
   public static SubscribeToIoTCoreOperationContext getSubscribeToIoTCoreModelContext() {
     return _SUBSCRIBE_TO_IOT_CORE_OPERATION_CONTEXT;
+  }
+
+  public static ResumeComponentOperationContext getResumeComponentModelContext() {
+    return _RESUME_COMPONENT_OPERATION_CONTEXT;
   }
 
   public static PublishToIoTCoreOperationContext getPublishToIoTCoreModelContext() {
@@ -472,6 +498,10 @@ public class GreengrassCoreIPCServiceModel extends EventStreamRPCServiceModel {
 
   public static StopComponentOperationContext getStopComponentModelContext() {
     return _STOP_COMPONENT_OPERATION_CONTEXT;
+  }
+
+  public static PauseComponentOperationContext getPauseComponentModelContext() {
+    return _PAUSE_COMPONENT_OPERATION_CONTEXT;
   }
 
   public static CreateLocalDeploymentOperationContext getCreateLocalDeploymentModelContext() {

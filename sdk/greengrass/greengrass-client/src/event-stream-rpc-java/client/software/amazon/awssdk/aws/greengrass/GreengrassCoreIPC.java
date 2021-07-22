@@ -16,9 +16,11 @@ import software.amazon.awssdk.aws.greengrass.model.IoTCoreMessage;
 import software.amazon.awssdk.aws.greengrass.model.ListComponentsRequest;
 import software.amazon.awssdk.aws.greengrass.model.ListLocalDeploymentsRequest;
 import software.amazon.awssdk.aws.greengrass.model.ListNamedShadowsForThingRequest;
+import software.amazon.awssdk.aws.greengrass.model.PauseComponentRequest;
 import software.amazon.awssdk.aws.greengrass.model.PublishToIoTCoreRequest;
 import software.amazon.awssdk.aws.greengrass.model.PublishToTopicRequest;
 import software.amazon.awssdk.aws.greengrass.model.RestartComponentRequest;
+import software.amazon.awssdk.aws.greengrass.model.ResumeComponentRequest;
 import software.amazon.awssdk.aws.greengrass.model.SendConfigurationValidityReportRequest;
 import software.amazon.awssdk.aws.greengrass.model.StopComponentRequest;
 import software.amazon.awssdk.aws.greengrass.model.SubscribeToComponentUpdatesRequest;
@@ -38,6 +40,9 @@ import software.amazon.awssdk.eventstreamrpc.model.EventStreamJsonMessage;
 public interface GreengrassCoreIPC {
   SubscribeToIoTCoreResponseHandler subscribeToIoTCore(final SubscribeToIoTCoreRequest request,
       final Optional<StreamResponseHandler<IoTCoreMessage>> streamResponseHandler);
+
+  ResumeComponentResponseHandler resumeComponent(final ResumeComponentRequest request,
+      final Optional<StreamResponseHandler<EventStreamJsonMessage>> streamResponseHandler);
 
   PublishToIoTCoreResponseHandler publishToIoTCore(final PublishToIoTCoreRequest request,
       final Optional<StreamResponseHandler<EventStreamJsonMessage>> streamResponseHandler);
@@ -118,6 +123,9 @@ public interface GreengrassCoreIPC {
       final Optional<StreamResponseHandler<EventStreamJsonMessage>> streamResponseHandler);
 
   StopComponentResponseHandler stopComponent(final StopComponentRequest request,
+      final Optional<StreamResponseHandler<EventStreamJsonMessage>> streamResponseHandler);
+
+  PauseComponentResponseHandler pauseComponent(final PauseComponentRequest request,
       final Optional<StreamResponseHandler<EventStreamJsonMessage>> streamResponseHandler);
 
   CreateLocalDeploymentResponseHandler createLocalDeployment(

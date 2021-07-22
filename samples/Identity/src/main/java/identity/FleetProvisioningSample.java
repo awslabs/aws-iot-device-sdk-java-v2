@@ -28,14 +28,10 @@ import software.amazon.awssdk.iot.iotidentity.model.RegisterThingResponse;
 import software.amazon.awssdk.iot.iotidentity.model.RegisterThingSubscriptionRequest;
 
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import java.util.HashMap;
-import java.util.Map;
 import com.google.gson.Gson;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;

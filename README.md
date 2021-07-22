@@ -64,6 +64,7 @@ mvn clean install
 ``` sh
 # NOTE: use the latest version of the CRT here
 
+
 git clone --branch v0.11.5 https://github.com/awslabs/aws-crt-java.git
 
 git clone https://github.com/awslabs/aws-iot-device-sdk-java-v2.git

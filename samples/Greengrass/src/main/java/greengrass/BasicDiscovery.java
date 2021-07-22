@@ -5,7 +5,6 @@
 
 package greengrass;
 
-import software.amazon.awssdk.crt.CRT;
 import software.amazon.awssdk.crt.CrtResource;
 import software.amazon.awssdk.crt.CrtRuntimeException;
 import software.amazon.awssdk.crt.Log;
@@ -25,7 +24,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
-import java.util.regex.Pattern;
 
 import static software.amazon.awssdk.iot.discovery.DiscoveryClient.TLS_EXT_ALPN;
 
@@ -165,8 +163,8 @@ public class BasicDiscovery {
             try(final DiscoveryClientConfig discoveryClientConfig =
                         new DiscoveryClientConfig(clientBootstrap, tlsCtxOptions,
                         new SocketOptions(), region, 1, proxyOptions);
-                    final DiscoveryClient discoveryClient = new DiscoveryClient(discoveryClientConfig);
-                    final MqttClientConnection connection = getClientFromDiscovery(discoveryClient, clientBootstrap)) {
+                final DiscoveryClient discoveryClient = new DiscoveryClient(discoveryClientConfig);
+                final MqttClientConnection connection = getClientFromDiscovery(discoveryClient, clientBootstrap)) {
 
                 if ("subscribe".equals(mode) || "both".equals(mode)) {
                     final CompletableFuture<Integer> subFuture = connection.subscribe(topic, QualityOfService.AT_MOST_ONCE, message -> {
